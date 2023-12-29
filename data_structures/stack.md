@@ -1,8 +1,8 @@
 # Stack
 
-A stack is a 'LIFO' data structure (last in, first out). Data is not read or 
-wrote by index but instead new data is 'pushed' to the top and data is 'popped' 
-from the top to access.
+A stack is a 'LIFO' data structure (last in, first out). This is in contrast to 
+'FIFO' that a [[queue]] uses. New data is 'pushed' to the top while reading data
+means 'popping' the element at the top.
 
 ## Pointer
 
