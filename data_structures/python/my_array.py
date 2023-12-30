@@ -34,6 +34,7 @@ class Array:
         return self.__size
 
 class ArrayError(Exception):
+    """ This lets us match an array specific error `except ArrayError: ...` """
     pass
 
 if __name__ == "__main__":
