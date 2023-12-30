@@ -3,7 +3,7 @@ class Array:
         """ Generate an array with optional items, and size """
         self.__type: type = kwargs.get("type") or type(items[0])
         if not all( isinstance(i, self.__type) for i in items):
-            raise ArrayError(f"Expected type {self.__type}, found {type(item)}.")
+            raise ArrayError(f"Expected type {self.__type} only.")
 
         self.__size: int = kwargs.get("size") or len(items)
         if self.__size < len(items):
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     print("---------------------------------------")
 
     while True:
-        print(arr)
+        print(f"\n{arr}")
         try:
             item = int(input("Item  >> "))
             idx  = int(input("Index >> "))
@@ -52,10 +52,6 @@ if __name__ == "__main__":
         else:
             try:
                 arr[idx] = item
-            except ArrayError as e: 
+            except IndexError as e: 
                 print(e)
-
-
-
-
 

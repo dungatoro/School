@@ -8,7 +8,7 @@ class Stack:
     def push(self, item):
         """ Push an item to the top of stack if not full """
         if self.__tos == len(self.__stack):
-            raise Exception(f"Stack full!")
+            raise StackError(f"Stack full!")
 
         self.__stack[self.__tos] = item
         self.__tos += 1
@@ -16,7 +16,7 @@ class Stack:
     def pop(self):
         """ Pop an item from the top of stack if not empty """
         if self.__tos == 0:
-            raise Exception(f"Stack empty!")
+            raise StackError(f"Stack empty!")
 
         self.__tos -= 1
         return self.__stack[self.__tos]
@@ -35,16 +35,32 @@ class Stack:
         """ Called by len() """
         return self.__tos
 
+class StackError(Exception):
+    """ This lets us match a stack specific error `except StackError: ...` """
+    pass
 
 if __name__ == "__main__":
-    stack = Stack(1, 2, 3, size=5)
+    s = Stack(2, 3, 4, size=5)
+    print("s = Stack(2, 3, 4, size=5)")
+    print("--------------------------")
 
-    print(stack)
-
-    for item in stack:
-        print(item)
-
-    print(stack)
+    while True:
+        print(f"\n{s}")
+        try:
+            item = int(input(">> "))
+        except ValueError as e:
+            print(e)
+        else:
+            if item == -1:
+                try:
+                    s.pop()
+                except StackError as e:
+                    print(e)
+            else:
+                try:
+                    s.push(item)
+                except StackError as e:
+                    print(e)
 
 
 
