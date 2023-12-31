@@ -6,3 +6,6 @@ been dequeued. This is in contrast to 'LIFO' that a [[stack]] uses.
 
 There a few different implementations of queues, a [[naïve_queue]], a 
 [[linear_queue]], or a [[circular_queue]].
+
+Another kind of queue is a [[priority_queue]] which has an additional priority 
+factor, with some items being given higher priority than others.
