@@ -2,17 +2,13 @@ from my_naive_queue import QueueError
 from my_array import Array
 
 class LinearQueue:
-    # The linear queue only differs from the naive implementation in how it 
-    # dequeues items: items in the queue are shuffled forward after a dequeue.
-    # I'm implementing everything from scratch here rather than inherit because 
-    # of python's ridiculous treatment of private attributes.
     def __init__(self, *items, **kwargs):
         self.__queue = Array(*items, size=kwargs.get("size") or len(items))
         self.__head  = 0
         self.__tail  = len(items)
 
     def enqueue(self, item):
-        """ Add to the back """
+        " Add to the back "
         if self.__tail == len(self.__queue):
             raise QueueError("Queue full!")
 
@@ -20,7 +16,7 @@ class LinearQueue:
         self.__tail += 1
 
     def dequeue(self):
-        """ Shuffle items after dequeue """
+        " Shuffle items after dequeue "
         if self.__head == self.__tail:
             raise QueueError("Queue empty!")
 
@@ -33,11 +29,11 @@ class LinearQueue:
         return item
 
     def __repr__(self):
-        """ Called by print() """
+        " Called by print() "
         return f"Queue{[self.__queue[i] for i in range(self.__head, self.__tail)]}"
 
     def __len__(self):
-        """ Called by len() """
+        " Called by len() "
         return self.__tail - self.__head
 
 if __name__ == "__main__":

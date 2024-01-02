@@ -8,7 +8,7 @@ class CircularQueue:
         self.__tail  = len(items)
 
     def enqueue(self, item):
-        """ """
+        " "
         if self.__tail == len(self.__queue):
             raise QueueError("Queue full!")
 
@@ -16,7 +16,7 @@ class CircularQueue:
         self.__tail += 1
 
     def dequeue(self):
-        """ """
+        " "
         if self.__head == self.__tail:
             raise QueueError("Queue empty!")
 
@@ -29,11 +29,11 @@ class CircularQueue:
         return item
 
     def __repr__(self):
-        """ Called by print() """
+        " Called by print() "
         # return f"Queue{[self.__queue[i] for i in range(self.__head, self.__tail)]}"
 
     def __len__(self):
-        """ Called by len() """
+        " Called by len() "
         # return self.__tail - self.__head
 
 if __name__ == "__main__":
