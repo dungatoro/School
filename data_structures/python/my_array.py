@@ -1,6 +1,6 @@
 class Array:
     def __init__(self, *items, **kwargs):
-        " Generate an array with optional items, and size "
+        "Generate an array with optional items, and size"
         self.__type: type = kwargs.get("type") or type(items[0])
         if not all( isinstance(i, self.__type) for i in items):
             raise ArrayError(f"Expected type {self.__type} only.")
@@ -22,19 +22,19 @@ class Array:
         self.__arr[idx] = item
 
     def __iter__(self):
-        " Lets us use `for i in arr: ...` "
+        "Lets us use `for i in arr: ...`"
         yield from self.__arr
 
     def __repr__(self) -> str:
-        " Called by print() "
+        "Called by print()"
         return f"Array{self.__arr}"
 
     def __len__(self) -> int:
-        " Called by len() "
+        "Called by len()"
         return self.__size
 
 class ArrayError(Exception):
-    " This lets us match an array specific error `except ArrayError: ...` "
+    "This lets us match an array specific error `except ArrayError: ...`"
     pass
 
 if __name__ == "__main__":
