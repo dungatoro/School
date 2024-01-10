@@ -2,7 +2,7 @@ from my_circular_queue import CircularQueue
 from my_naive_queue import QueueError
 
 class PriorityQueue:
-    "Multiple circular queues"
+    """Multiple circular queues"""
     def __init__(self, *items, **kwargs):
         self.__queues = {}
         self.__type: type = kwargs.get("type") or type(items[0][0])
@@ -54,7 +54,7 @@ class PriorityQueue:
         return f"Queue[{r[:-2]}]"
 
     def __len__(self):
-        "Called by len() & queue will be falsey with length 0"
+        """Called by len() & queue will be falsey with length 0"""
         return self.__len
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ class NaiveQueue:
         return self.__head == self.__tail
 
     def enqueue(self, item):
-        "Add to the back"
+        """Add to the back"""
         if self.is_full():
             raise QueueError("Queue full!")
 
@@ -21,7 +21,7 @@ class NaiveQueue:
         self.__tail += 1
 
     def dequeue(self):
-        "Remove from the front"
+        """Remove from the front"""
         if self.is_empty():
             raise QueueError("Queue empty!")
 
@@ -30,15 +30,15 @@ class NaiveQueue:
         return item
 
     def __repr__(self):
-        "Called by print()"
+        """Called by print()"""
         return f"Queue{[self.__queue[i] for i in range(self.__head, self.__tail)]}"
 
     def __len__(self):
-        "Called by len() & queue will be falsey with length 0"
+        """Called by len() & queue will be falsey with length 0"""
         return self.__tail - self.__head
 
 class QueueError(Exception):
-    " This lets us match a queue specific error `except QueueError: ...` "
+    """This lets us match a queue specific error `except QueueError: ...`"""
     pass
 
 if __name__ == "__main__":
