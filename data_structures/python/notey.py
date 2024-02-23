@@ -1,4 +1,5 @@
 import pickle
+import cmd
 
 class Notebook(object):
     def __init__(self, file=""):
@@ -44,6 +45,19 @@ class Notebook(object):
             self.__pickle(self.__file)
         else:
             raise FileNotFoundError("No file set for this notebook.")
+
+class NotebookCli(cmd.Cmd):
+    def do_note(self, line):
+        """Create a new note"""
+        pass
+
+    def do_search(self, line):
+        """Search by tag"""
+        pass
+
+    def do_get(self, line):
+        """Get a specific note"""
+        pass
 
 if __name__ == "__main__":
     n = Notebook("notey.pickle")
