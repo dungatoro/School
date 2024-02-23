@@ -30,8 +30,8 @@ class Notebook(object):
         for tag in tags:
             notes = self.__tags.get(tag)
             if notes:
-                matches.append(notes)
-        return matches
+                matches += notes
+        return list(set(matches)) # remove duplicates
 
     def __pickle(self, file):
         with open(file, 'wb') as f:
@@ -61,7 +61,7 @@ class NotebookCli(cmd.Cmd):
 
 if __name__ == "__main__":
     n = Notebook("notey.pickle")
-    n.add_note("shopping list", "cheese, tomato, shoe", "shopping", "todos")
+    # n.add_note("shopping list", "cheese, tomato, shoe", "shopping", "todos")
     print(n.search_tags("todos", "shopping"))
     n.save()
 
