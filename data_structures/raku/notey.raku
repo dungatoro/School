@@ -13,7 +13,7 @@ class Notebook {
 
     multi method ASSIGN-KEY(Str $title, (Str $txt, *@tags)) {
         %!notes{$title} = $txt;
-        for @tags -> $tag { %!tags{$tag}.append($title); }
+        for @tags -> $tag { %!tags{$tag}.push($title); }
     }
 
     method search( *@tags ) {
