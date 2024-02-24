@@ -17,7 +17,7 @@ class Notebook {
     }
 
     method search( *@tags ) {
-        (map { @(%!tags{$_}) if %!tags{$_} }, @tags).flat.unique
+        @tags.map({@(%!tags{$_}) if %!tags{$_}}).flat.unique
     }
 
 }
