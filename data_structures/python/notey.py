@@ -23,14 +23,13 @@ class Notebook(object):
                 self.__tags[tag] = [title]
 
     def __getitem__(self, title):
-        return self.__notes[title]
+        return self.__notes.get(title) or f"No note called {title}"
 
     def search_tags(self, *tags):
         matches = []
         for tag in tags:
-            notes = self.__tags.get(tag)
-            if notes:
-                matches += notes
+            if titles := self.__tags.get(tag):
+                matches += titles
         return list(set(matches)) # remove duplicates
 
     def __pickle(self, file):
@@ -47,21 +46,43 @@ class Notebook(object):
             raise FileNotFoundError("No file set for this notebook.")
 
 class NotebookCli(cmd.Cmd):
-    def do_note(self, line):
+    notebook = Notebook("notey.pickle")
+    prompt = " >> "
+
+    def postcmd(self, stop, line):
+        self.notebook.save()
+        return 
+
+    def cmdloop(self, intro=None):
+        print(intro)
+        while True:
+            try:
+                super().cmdloop(intro="")
+                break
+            except KeyboardInterrupt:
+                print("^C")
+                exit(0)
+
+    def do_make_note(self, line):
         """Create a new note"""
-        pass
+        title, text, *tags = line.split(",")
+        tags = [s.strip() for s in tags]
+        self.notebook.add_note(title, text, *tags)
+        print(f"Note titled {title} added to notebook!")
 
-    def do_search(self, line):
-        """Search by tag"""
-        pass
+    def do_search_title(self, title):
+        """Search by title"""
+        print(self.notebook[title])
 
-    def do_get(self, line):
-        """Get a specific note"""
-        pass
+    def do_search_tags(self, line):
+        """Search by tags"""
+        tags = [s.strip() for s in line.split(",")]
+        matches = self.notebook.search_tags(*tags)
+        if matches:
+            for match in matches: print(f"* {match}")
+        else:
+            print("No matches found")
 
 if __name__ == "__main__":
-    n = Notebook("notey.pickle")
-    # n.add_note("shopping list", "cheese, tomato, shoe", "shopping", "todos")
-    print(n.search_tags("todos", "shopping"))
-    n.save()
+    NotebookCli().cmdloop("Welcome to your notebook! Type 'help' if needed.")
 
