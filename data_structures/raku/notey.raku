@@ -22,6 +22,4 @@ class Notebook {
 
 my $notebook = Notebook.new();
 $notebook<list> = 'tomato, cheese, shoe', 'shopping', 'dinner';
-$notebook<wist> = 'cards';
-$notebook<gist> = 'github', 'coding', 'dinner';
-say $notebook.search('shopping', 'dinner', 'blah');
+
