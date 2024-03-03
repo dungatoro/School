@@ -1,20 +1,32 @@
 class Node {
-    has $.val;
+    has $.n;
     has $!l = Nil;
     has $!r = Nil;
 
     method append (*@vals) {
-        say $!val;
-        for @vals -> $val {
-            ($!l ~~ Nil ?? ($!l = Node.new($val)) !! $!l.append($val)) if $val <= $!val;
-            ($!r ~~ Nil ?? ($!r = Node.new($val)) !! $!r.append($val)) if $val >  $!val;
+        for @vals -> $n {
+             if $n <= $!n {
+                if $!l.defined { 
+                    $!l.append($n);
+                } else {
+                    $!l = Node.new(n => $n);
+                }
+            } elsif $n >  $!n {
+                if $!r.defined {
+                    $!r = Node.new(n => $n);
+                } else {
+                    $!r.append($n);
+                }
+            }
         }
     }
 
-    method Str { "{$!val}({$!l or '_'} {$!r or '_'})" }
+    method Str { 
+        "{$!n}({$!l.defined ?? $!l !! '_'} {$!r.defined ?? $!r !! '_'})" 
+    }
 }
 
-my $tree = Node.new(val => 12);
+my $tree = Node.new(n => 12);
 $tree.append(8, 9, 3, -4, 4, 92, 62);
 
 print $tree;
