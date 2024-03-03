@@ -20,7 +20,8 @@ class Node:
                 self.__r.append(n)
 
     def pre_order(self):
-        order = [self.__n]
+        order = []
+        order.append(self.__n)
         if self.__l != None:
             order += self.__l.pre_order()
         if self.__r != None:
