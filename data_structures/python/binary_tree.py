@@ -72,14 +72,25 @@ class Node:
 		if self.__l != None:
 			self.__l.rows(depth+1, rows)
 		else: 
-			rows[depth].append(None)
+			if len(rows) <= depth+1:
+			    rows.append([])
+			rows[depth+1].append(None)
 
 		if self.__r != None:
 			self.__r.rows(depth+1, rows)
 		else: 
-			rows[depth].append(None)
+			if len(rows) <= depth+1:
+			    rows.append([])
+			rows[depth+1].append(None)
 		
 		return rows
+
+	def display(self):
+		rows = self.rows()
+		tree = [' '*i**2 for i, _ in enumerate(rows)][::-1]
+		for i, row in enumerate([[str(item) if item != None else ' ' for item in row ] for row in rows]): 
+			tree[i] += (' '*((len(rows)-i)**2)).join(row)
+		for row in tree: print(row)
 
 	def __repr__(self):
 		return f"{self.__n}({self.__l or '_'} {self.__r or '_'})"
@@ -147,4 +158,5 @@ class BinaryTreeCLI(cmd.Cmd):
 if __name__ == '__main__':
 	t = Node(40, 30, 50, 25, 35, 45, 60, 15, 28, 55, 70)
 	print( t.rows())
+	t.display()
 	# BinaryTreeCLI().cmdloop("TREES. Type 'help' if needed.")
