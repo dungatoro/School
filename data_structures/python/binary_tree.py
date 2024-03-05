@@ -22,6 +22,8 @@ class Node:
 				else:
 					self.__r.append(n)
 
+	def val(self): return self.__n
+
 	def pre_order(self):
 		order = []
 		order.append(self.__n)
@@ -58,6 +60,26 @@ class Node:
 			return self.__r.contains(n)
 		else:
 			return False
+
+	def rows(self, depth=0, rows=None):
+		if rows is None:
+		    rows = []
+		
+		if len(rows) <= depth:
+		    rows.append([])
+		
+		rows[depth].append(self.__n)
+		if self.__l != None:
+			self.__l.rows(depth+1, rows)
+		else: 
+			rows[depth].append(None)
+
+		if self.__r != None:
+			self.__r.rows(depth+1, rows)
+		else: 
+			rows[depth].append(None)
+		
+		return rows
 
 	def __repr__(self):
 		return f"{self.__n}({self.__l or '_'} {self.__r or '_'})"
@@ -114,8 +136,15 @@ class BinaryTreeCLI(cmd.Cmd):
 		except:
 			print("Tree needs numbers.")
 	
-	def do_contains(self, line):
-		
+	def do_contains(self, item):
+		"""Give an item and check if it is in the tree."""
+		try:
+			print(self.tree.contains(int(item)))
+		except:
+			print("Give a single number.")
+
 
 if __name__ == '__main__':
-	BinaryTreeCLI().cmdloop("TREES. Type 'help' if needed.")
+	t = Node(40, 30, 50, 25, 35, 45, 60, 15, 28, 55, 70)
+	print( t.rows())
+	# BinaryTreeCLI().cmdloop("TREES. Type 'help' if needed.")
