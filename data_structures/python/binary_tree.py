@@ -62,35 +62,33 @@ class Node:
 			return False
 
 	def rows(self, depth=0, rows=None):
-		if rows is None:
-		    rows = []
-		
-		if len(rows) <= depth:
-		    rows.append([])
+		if rows is None: rows = []
+		if len(rows) <= depth: rows.append([])
 		
 		rows[depth].append(self.__n)
 		if self.__l != None:
 			self.__l.rows(depth+1, rows)
 		else: 
-			if len(rows) <= depth+1:
-			    rows.append([])
+			if len(rows) <= depth+1: rows.append([])
 			rows[depth+1].append(None)
 
 		if self.__r != None:
 			self.__r.rows(depth+1, rows)
 		else: 
-			if len(rows) <= depth+1:
-			    rows.append([])
+			if len(rows) <= depth+1: rows.append([])
 			rows[depth+1].append(None)
 		
 		return rows
 
 	def display(self):
 		rows = self.rows()
-		tree = [' '*i**2 for i, _ in enumerate(rows)][::-1]
-		for i, row in enumerate([[str(item) if item != None else ' ' for item in row ] for row in rows]): 
-			tree[i] += (' '*((len(rows)-i)**2)).join(row)
-		for row in tree: print(row)
+		rows_strs = [[str(i) if i!=None else '  ' for i in r] for r in rows]
+		branches =  ['']+[['  ' if i==None else (' /' if n%2==0 else '\\ ') for n, i in enumerate(r)] for r in rows[1:]]
+
+		for i, (row, branch) in enumerate(zip(rows_strs, branches)): 
+			space = ' '*((len(rows)-i)**2)
+			print(space+space.join(branch))
+			print(space+space.join(row))
 
 	def __repr__(self):
 		return f"{self.__n}({self.__l or '_'} {self.__r or '_'})"
@@ -156,7 +154,5 @@ class BinaryTreeCLI(cmd.Cmd):
 
 
 if __name__ == '__main__':
-	t = Node(40, 30, 50, 25, 35, 45, 60, 15, 28, 55, 70)
-	print( t.rows())
-	t.display()
+	Node(40, 30, 50, 25, 35, 45, 60, 15, 28, 55, 70).display()
 	# BinaryTreeCLI().cmdloop("TREES. Type 'help' if needed.")
