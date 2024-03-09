@@ -40,9 +40,26 @@ class Node {
         }
         @rows
     }
+
+    method display {
+        my @rows = self.rows;
+        my @rows-strs = @rows.map({[$^a.map({$^b.defined??$^b!!'  '}).join(' ')]});
+        # my @rows-strs = @rows.map({$^a.map({say $^b}).join(' ')});
+        say @rows-strs;
+    }
+
+    # def display(self):
+	# 	rows = self.rows()
+	# 	rows_strs = [[str(i) if i!=None else '  ' for i in r] for r in rows]
+	# 	branches =  ['']+[['  ' if i==None else (' /' if n%2==0 else '\\ ') for n, i in enumerate(r)] for r in rows[1:]]
+
+	# 	for i, (row, branch) in enumerate(zip(rows_strs, branches)): 
+	# 		space = ' '*((len(rows)-i)**2)
+	# 		print(space+space.join(branch))
+	# 		print(space+space.join(row))
 }
 
 my $tree = Node.new(n=>40);
 $tree.append(30, 50, 25, 35, 45, 60, 15, 28, 55, 70);
 
-say $tree.rows;
+$tree.display;
