@@ -3,30 +3,42 @@ class Node {
     has $!l = Nil;
     has $!r = Nil;
 
+    method Str{"{$!n}({$!l.defined??$!l!!'_'} {$!r.defined??$!r!!'_'})"}
+
     method append (*@vals) {
         for @vals -> $n {
              if $n <= $!n {
-                if $!l.defined { 
-                    $!l.append($n);
-                } else {
-                    $!l = Node.new(n => $n);
-                }
-            } elsif $n >  $!n {
-                if $!r.defined {
-                    $!r = Node.new(n => $n);
-                } else {
-                    $!r.append($n);
-                }
+                $!l.append($n) if $!l.defined;
+                $!l = Node.new(n=>$n) if not $!l.defined;
+            } else {
+                $!r.append($n) if $!r.defined;
+                $!r = Node.new(n=>$n) if not $!r.defined;
             }
         }
     }
 
-    method Str { 
-        "{$!n}({$!l.defined ?? $!l !! '_'} {$!r.defined ?? $!r !! '_'})" 
+    method height {
+        my $l-depth = $!l.defined ?? $!l.height !! 0;
+        my $r-depth = $!r.defined ?? $!r.height !! 0;
+        $l-depth > $r-depth ?? $l-depth+1 !! $r-depth+1
+    }
+
+    method pre-order {
+        flat($!n,$!l.defined??$!l.pre-order!!(),$!r.defined??$!r.pre-order!!())
+    }
+
+    method in-order {
+        flat($!l.defined??$!l.in-order!!(),$!n,$!r.defined??$!r.in-order!!())
+    }
+
+    method post-order {
+        flat($!l.defined??$!l.post-order!!(),$!r.defined??$!r.post-order!!(),$!n)
     }
 }
 
-my $tree = Node.new(n => 12);
-$tree.append(8, 9, 3, -4, 4, 92, 62);
+my $tree = Node.new(n=>40);
+$tree.append(30, 50, 25, 35, 45, 60, 15, 28, 55, 70);
 
-print $tree;
+say $tree.pre-order;
+say $tree.in-order;
+say $tree.post-order;
