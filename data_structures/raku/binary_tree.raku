@@ -23,22 +23,26 @@ class Node {
         $l-depth > $r-depth ?? $l-depth+1 !! $r-depth+1
     }
 
-    method pre-order {
-        flat($!n,$!l.defined??$!l.pre-order!!(),$!r.defined??$!r.pre-order!!())
-    }
+    method pre-order{flat($!n,$!l.defined??$!l.pre-order!!(),$!r.defined??$!r.pre-order!!())}
+    method in-order{flat($!l.defined??$!l.in-order!!(),$!n,$!r.defined??$!r.in-order!!())}
+    method post-order{flat($!l.defined??$!l.post-order!!(),$!r.defined??$!r.post-order!!(),$!n)}
 
-    method in-order {
-        flat($!l.defined??$!l.in-order!!(),$!n,$!r.defined??$!r.in-order!!())
-    }
-
-    method post-order {
-        flat($!l.defined??$!l.post-order!!(),$!r.defined??$!r.post-order!!(),$!n)
+    method rows ($depth=0, @rows=[]) {
+        @rows.push([]) if @rows.elems <= $depth;
+        @rows[$depth].push($!n);
+        for $!l, $!r -> $node {
+            if $node.defined {
+                $node.rows($depth+1, @rows);
+            } else {
+                @rows.push([]) if @rows.elems <= $depth+1;
+                @rows[$depth+1].push(Nil);
+            }
+        }
+        @rows
     }
 }
 
 my $tree = Node.new(n=>40);
 $tree.append(30, 50, 25, 35, 45, 60, 15, 28, 55, 70);
 
-say $tree.pre-order;
-say $tree.in-order;
-say $tree.post-order;
+say $tree.rows;
