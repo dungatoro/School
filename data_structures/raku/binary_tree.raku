@@ -42,10 +42,9 @@ class Node {
     }
 
     method display {
-        my @rows = self.rows;
-        my @rows-strs = @rows.map({[$^a.map({$^b.defined??$^b!!'  '}).join(' ')]});
+        my @rows-strs = self.rows.map({[$^a.map({$^b.defined??$^b!!'  '}).join(' ')]});
         # my @rows-strs = @rows.map({$^a.map({say $^b}).join(' ')});
-        say @rows-strs;
+        say $_ for @rows-strs;
     }
 
     # def display(self):
