@@ -1,5 +1,5 @@
-from my_circular_queue import CircularQueue
-from my_naive_queue import QueueError
+from circular_queue import CircularQueue
+from naive_queue import QueueError
 
 class PriorityQueue:
     """Multiple circular queues"""

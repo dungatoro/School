@@ -1,4 +1,4 @@
-from my_array import Array
+from array import Array
 
 class Stack:
     def __init__(self, *items, **kwargs):
