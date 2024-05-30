@@ -2,6 +2,7 @@ from queue import PriorityQueue
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
+import tkinter as tk
 
 class Infinity:
     def __gt__(self, _): return True
@@ -174,21 +175,62 @@ class Graph:
         # no path exists between the two nodes
         return []
 
-graph = Graph()
-"""
-graph.load_dict({
-    'A': [(4, 'B'), (9, 'C'), (5, 'D')],
-    'B': [(4, 'A'), (14, 'F')],
-    'C': [(9, 'A'), (7, 'D'), (4, 'E')],
-    'D': [(5, 'A'), (7, 'C'), (3, 'H')],
-    'E': [(4, 'C'), (6, 'G'), (4, 'H')],
-    'F': [(14, 'B')],
-    'G': [(6, 'E')],
-    'H': [(3, 'D'), (4, 'E'), (8, 'I')],
-    'I': [(8, 'H')], 
-})
-"""
-graph.load_maze(3, 3)
+# Global variables to store the coordinates of purple and pink buttons
+start = None
+end = None
 
-print(graph.as_dict())
+def set_start(row, col, button):
+    global start
+    # If there is already a purple button, change it back to default
+    if start is not None:
+        old_row, old_col = start
+        buttons[old_row][old_col].configure(bg="gray")
+    
+    # Set the clicked button to purple
+    button.configure(bg="purple")
+    start = (row, col)
+    print(f"Purple button at: {start}")
+
+def set_end(row, col, button):
+    global end
+    # If there is already a pink button, change it back to default
+    if end is not None:
+        old_row, old_col = end
+        buttons[old_row][old_col].configure(bg="gray")
+    
+    # Set the clicked button to pink
+    button.configure(bg="pink")
+    end = (row, col)
+    print(f"Pink button at: {end}")
+
+# Create the main window
+root = tk.Tk()
+root.title("Grid of Buttons")
+
+# Define the grid size
+rows = 20
+cols = 20
+
+# Create a list to hold references to the buttons
+buttons = []
+
+# Create the grid of buttons
+for row in range(rows):
+    row_buttons = []
+    for col in range(cols):
+        button = tk.Button(root, bg="gray", relief="flat", bd=0)
+        button.grid(row=row, column=col, stick="nsew")
+        button.bind("<Button-1>", lambda event, r=row, c=col, b=button: set_start(r, c, b))
+        button.bind("<Button-3>", lambda event, r=row, c=col, b=button: set_end(r, c, b))
+        row_buttons.append(button)
+    buttons.append(row_buttons)
+
+# Configure grid to have no gaps between buttons
+for i in range(rows):
+    root.grid_rowconfigure(i, weight=1)
+for i in range(cols):
+    root.grid_columnconfigure(i, weight=1)
+
+# Start the Tkinter event loop
+root.mainloop()
 
