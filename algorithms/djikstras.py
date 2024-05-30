@@ -106,16 +106,35 @@ class Graph:
         plt.show()
 
     def load_maze(self, width, height):
-
         # create a blank grid
+        grid = {}
         for x in range(width):
             for y in range(height):
                 nodes = [(0, (i,j)) for i,j in [(x,y-1),(x,y+1),(x-1,y),(x+1,y)]
                               if 0 <= i < width and 0 <= j < height ]
-                self.__graph[(x, y)] = nodes
+                grid[(x, y)] = nodes
 
+        # traverse every node
+        current = next(iter(grid))
+        visited = {key: False for key in grid}
+        stack = [current]
+        visited[current] = True
+        path = []
+        while len(stack) > 0:
+            path.append(current)
+            unvisited = [n for _, n in grid[current] if not visited[n]]
+            if len(unvisited) == 0:
+                current = stack.pop()
+            else:
+                stack.append(current)
+                current = random.choice(unvisited)
+                visited[current] = True
+
+        graph = {key: [] for key in grid}
+        for i in range(len(path)-1):
+            graph[path[i]].append((random.randint(0, 20), path[i+1]))
         
-        
+        self.__graph = graph
 
     def bfs(self, start, end):
         # there is no need to traverse, the `start` is the `end`
@@ -154,8 +173,9 @@ class Graph:
     
         # no path exists between the two nodes
         return []
-        
+
 graph = Graph()
+"""
 graph.load_dict({
     'A': [(4, 'B'), (9, 'C'), (5, 'D')],
     'B': [(4, 'A'), (14, 'F')],
@@ -167,7 +187,8 @@ graph.load_dict({
     'H': [(3, 'D'), (4, 'E'), (8, 'I')],
     'I': [(8, 'H')], 
 })
+"""
+graph.load_maze(3, 3)
 
-print(graph.djikstras('A', 'E'))
-print(graph.bfs('A', 'E'))
+print(graph.as_dict())
 
