@@ -175,57 +175,90 @@ class Graph:
         # no path exists between the two nodes
         return []
 
-# Global variables to store the coordinates of purple and pink buttons
 start = None
 end = None
+root = tk.Tk()
+
+def clear_path():
+    for child in root.children.values():
+        _, _, _, _, bg = child.configure()['background']
+        if bg == "red":
+            child.configure(bg="gray")
 
 def set_start(row, col, button):
     global start
-    # If there is already a purple button, change it back to default
+    # change old purple to gray
     if start is not None:
         old_row, old_col = start
         buttons[old_row][old_col].configure(bg="gray")
     
-    # Set the clicked button to purple
+    # change button just clicked to purple
     button.configure(bg="purple")
     start = (row, col)
-    print(f"Purple button at: {start}")
+    clear_path()
 
 def set_end(row, col, button):
     global end
-    # If there is already a pink button, change it back to default
+    # change old pink to gray
     if end is not None:
         old_row, old_col = end
         buttons[old_row][old_col].configure(bg="gray")
     
-    # Set the clicked button to pink
+    # change button just clicked to pink
     button.configure(bg="pink")
     end = (row, col)
-    print(f"Pink button at: {end}")
+    clear_path()
 
-# Create the main window
-root = tk.Tk()
-root.title("Grid of Buttons")
-
-# Define the grid size
-rows = 20
-cols = 20
+# grid size
+rows = 40
+cols = 40
 button_dim = 20
 
-# Create a list to hold references to the buttons
+# list of references to the buttons
 buttons = []
 
-# Create the grid of buttons
+# setup the grid of buttons
 for row in range(rows):
     row_buttons = []
     for col in range(cols):
-        button = tk.Frame(root, bg="gray", relief="flat")
+        button = tk.Frame(root, bg="gray")
         button.place(x=col*button_dim, y=row*button_dim, width=button_dim, height=button_dim)
         button.bind("<Button-1>", lambda event, r=row, c=col, b=button: set_start(r, c, b))
         button.bind("<Button-3>", lambda event, r=row, c=col, b=button: set_end(r, c, b))
         row_buttons.append(button)
     buttons.append(row_buttons)
 
-# Start the Tkinter event loop
-root.mainloop()
 
+# load the graph
+graph = Graph()
+graph.load_maze(rows, cols)
+
+# add the walls
+for (x, y), neighbours in graph.as_dict().items():
+    existing = [neighbour for weight, neighbour in neighbours]
+    if (x,y-1) not in existing:
+        wall = tk.Frame(root, bg="black")
+        wall.place(x=x*button_dim, y=y*button_dim, width=button_dim, height=2)
+    if (x,y+1) not in existing:
+        wall = tk.Frame(root, bg="black")
+        wall.place(x=x*button_dim, y=(y+1)*button_dim, width=button_dim, height=2)
+    if (x-1,y) not in existing:
+        wall = tk.Frame(root, bg="black")
+        wall.place(x=x*button_dim, y=y*button_dim, width=2, height=button_dim)
+    if (x+1,y) not in existing:
+        wall = tk.Frame(root, bg="black")
+        wall.place(x=(x+1)*button_dim, y=y*button_dim, width=2, height=button_dim)
+
+# tk loop
+while True:
+    path = graph.djikstras(start, end)
+    try:
+        path.pop()
+        path.pop(0)
+        for x, y in path:
+            buttons[x][y].configure(bg="red")
+    except:
+        pass
+
+    root.update_idletasks()
+    root.update()
