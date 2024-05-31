@@ -210,6 +210,7 @@ root.title("Grid of Buttons")
 # Define the grid size
 rows = 20
 cols = 20
+button_dim = 20
 
 # Create a list to hold references to the buttons
 buttons = []
@@ -218,18 +219,12 @@ buttons = []
 for row in range(rows):
     row_buttons = []
     for col in range(cols):
-        button = tk.Button(root, bg="gray", relief="flat", bd=0)
-        button.grid(row=row, column=col, stick="nsew")
+        button = tk.Frame(root, bg="gray", relief="flat")
+        button.place(x=col*button_dim, y=row*button_dim, width=button_dim, height=button_dim)
         button.bind("<Button-1>", lambda event, r=row, c=col, b=button: set_start(r, c, b))
         button.bind("<Button-3>", lambda event, r=row, c=col, b=button: set_end(r, c, b))
         row_buttons.append(button)
     buttons.append(row_buttons)
-
-# Configure grid to have no gaps between buttons
-for i in range(rows):
-    root.grid_rowconfigure(i, weight=1)
-for i in range(cols):
-    root.grid_columnconfigure(i, weight=1)
 
 # Start the Tkinter event loop
 root.mainloop()
