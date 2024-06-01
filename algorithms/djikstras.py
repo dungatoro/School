@@ -175,8 +175,16 @@ class Graph:
         # no path exists between the two nodes
         return []
 
-start = None
-end = None
+# grid size
+rows = 50
+cols = 50
+button_dim = 20
+
+# list of references to the buttons
+buttons = []
+
+start = (0,0)
+end = (rows-1, cols-1)
 root = tk.Tk()
 
 def clear_path():
@@ -188,34 +196,25 @@ def clear_path():
 def set_start(row, col, button):
     global start
     # change old purple to gray
-    if start is not None:
-        old_row, old_col = start
-        buttons[old_row][old_col].configure(bg="gray")
+    old_row, old_col = start
+    buttons[old_row][old_col].configure(bg="gray")
     
     # change button just clicked to purple
     button.configure(bg="purple")
-    start = (row, col)
+    start = row, col
     clear_path()
 
 def set_end(row, col, button):
     global end
     # change old pink to gray
-    if end is not None:
-        old_row, old_col = end
-        buttons[old_row][old_col].configure(bg="gray")
+    old_row, old_col = end
+    buttons[old_row][old_col].configure(bg="gray")
     
     # change button just clicked to pink
     button.configure(bg="pink")
-    end = (row, col)
+    end = row, col
     clear_path()
 
-# grid size
-rows = 40
-cols = 40
-button_dim = 20
-
-# list of references to the buttons
-buttons = []
 
 # setup the grid of buttons
 for row in range(rows):
@@ -227,7 +226,6 @@ for row in range(rows):
         button.bind("<Button-3>", lambda event, r=row, c=col, b=button: set_end(r, c, b))
         row_buttons.append(button)
     buttons.append(row_buttons)
-
 
 # load the graph
 graph = Graph()
@@ -251,11 +249,13 @@ for (x, y), neighbours in graph.as_dict().items():
 
 # tk loop
 while True:
-    path = graph.djikstras(start, end)
+    (x, y), (i, j) = start, end
+    path = graph.djikstras((y,x), (j,i))
+    print(path)
     try:
         path.pop()
         path.pop(0)
-        for x, y in path:
+        for y, x in path:
             buttons[x][y].configure(bg="red")
     except:
         pass
