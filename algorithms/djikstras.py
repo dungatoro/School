@@ -166,9 +166,9 @@ class Graph:
         return []
 
 # grid size
-rows = 32
-cols = 32
-button_dim = 32
+rows = 40
+cols = 40
+button_dim = 20
 
 # list of references to the buttons
 buttons = []
@@ -262,6 +262,7 @@ buttons[rows-1][cols-1].configure(bg=END_COLOUR)
 old_start = start
 old_end = end
 colour_routes()
+buttons[0][0].configure(bg="#FFFFFF")
 root.update()
 
 # tk loop
@@ -269,18 +270,17 @@ while True:
     # flip the path diagonally due to difference in coordinates
     if start != old_start:
         colour_routes()
+        x, y = start
+        buttons[x][y].configure(bg="#FFFFFF")
 
-    if start != old_start or end != old_end:
-        (x, y), (i, j) = start, end
-        path = graph.djikstras((y,x), (j,i))
-        try:
-            path.pop()
-            path.pop(0)
-            for y, x in path:
-                #buttons[x][y].configure(bg="#000000")
-                pass
-        except:
-            pass
+    # if start != old_start or end != old_end:
+    #     (x, y), (i, j) = start, end
+    #     path = graph.djikstras((y,x), (j,i))
+    #     try:
+    #         path.pop()
+    #         path.pop(0)
+    #     except:
+    #         pass
 
     old_start = start
     old_end = end
