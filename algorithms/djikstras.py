@@ -1,8 +1,21 @@
 from queue import PriorityQueue
+from collections import deque
 import random
-import networkx as nx
-import matplotlib.pyplot as plt
 import tkinter as tk
+import colorsys
+
+def hsv_to_hex(h, s, v):
+    # Convert HSV (h: 0-360, s: 0-1, v: 0-1) to a hexadecimal color string.
+    h = h / 360.0  # Convert hue to [0, 1]
+    r, g, b = colorsys.hsv_to_rgb(h, s, v)
+    return f'#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}'
+
+def hex_to_hsv(hex_color):
+    # Convert a hexadecimal color string to HSV (h: 0-360, s: 0-1, v: 0-1).
+    hex_color = hex_color.lstrip('#')
+    r, g, b = tuple(int(hex_color[i:i+2], 16) / 255.0 for i in (0, 2, 4))
+    h, s, v = colorsys.rgb_to_hsv(r, g, b)
+    return h * 360, s, v  # Convert hue to [0, 360]
 
 class Infinity:
     def __gt__(self, _): return True
@@ -10,6 +23,9 @@ class Infinity:
     def __repr__(self): return "∞"
 
 class Graph:
+    def __getitem__(self, idx):
+        return self.__graph[idx]
+
     def load_dict(self, d):
         """ Set the graph using a dictionary representation. """
         self.__graph = d
@@ -80,32 +96,6 @@ class Graph:
         # Append the start node and reverse the list
         return (path+[start])[::-1]
 
-    def show_networkx(self):
-        g = nx.Graph()
-
-        for node, nodes in self.__graph.items():
-            for weight, neighbour in nodes:
-                g.add_edge(node, neighbour, weight=weight)
-                
-        node_colours, edge_colours = [], []
-        for node in g:
-            if node in path:
-                node_colours.append('purple')
-            else: 
-                node_colours.append('pink')
-                
-        for node1, node2 in g.edges():
-            if node1 in path and node2 in path:
-                edge_colours.append('purple')
-            else: 
-                edge_colours.append('pink')
-                
-        pos = nx.spring_layout(g, k=1, iterations=200)
-        nx.draw(g, pos, node_color=node_colours, edge_color=edge_colours, with_labels=True)
-        edge_labels = nx.get_edge_attributes(g, "weight")
-        nx.draw_networkx_edge_labels(g, pos, edge_labels)
-        plt.show()
-
     def load_maze(self, width, height):
         # create a blank grid
         grid = {}
@@ -133,7 +123,7 @@ class Graph:
 
         graph = {key: [] for key in grid}
         for i in range(len(path)-1):
-            graph[path[i]].append((random.randint(0, 20), path[i+1]))
+            graph[path[i]].append((random.randint(-10, 10), path[i+1]))
         
         self.__graph = graph
 
@@ -176,9 +166,9 @@ class Graph:
         return []
 
 # grid size
-rows = 50
-cols = 50
-button_dim = 20
+rows = 32
+cols = 32
+button_dim = 32
 
 # list of references to the buttons
 buttons = []
@@ -187,40 +177,40 @@ start = (0,0)
 end = (rows-1, cols-1)
 root = tk.Tk()
 
-def clear_path():
-    for child in root.children.values():
-        _, _, _, _, bg = child.configure()['background']
-        if bg == "red":
-            child.configure(bg="gray")
+# def clear_path():
+#     for child in root.children.values():
+#         _, _, _, _, bg = child.configure()['background']
+#         if bg == "red":
+#             child.configure(bg="#888888")
+
+START_COLOUR = "#FFD3D6"
+END_COLOUR = "#F765A3"
 
 def set_start(row, col, button):
     global start
-    # change old purple to gray
+    # change old #882288 to #888888
     old_row, old_col = start
-    buttons[old_row][old_col].configure(bg="gray")
     
-    # change button just clicked to purple
-    button.configure(bg="purple")
+    # change button just clicked to #882288
+    button.configure(bg=START_COLOUR)
     start = row, col
-    clear_path()
+#    clear_path()
 
 def set_end(row, col, button):
     global end
-    # change old pink to gray
+    # change old #882222 to #888888
     old_row, old_col = end
-    buttons[old_row][old_col].configure(bg="gray")
     
-    # change button just clicked to pink
-    button.configure(bg="pink")
+    # change button just clicked to #882222
+    button.configure(bg=END_COLOUR)
     end = row, col
-    clear_path()
-
+#    clear_path()
 
 # setup the grid of buttons
 for row in range(rows):
     row_buttons = []
     for col in range(cols):
-        button = tk.Frame(root, bg="gray")
+        button = tk.Frame(root, bg="#888888")
         button.place(x=col*button_dim, y=row*button_dim, width=button_dim, height=button_dim)
         button.bind("<Button-1>", lambda event, r=row, c=col, b=button: set_start(r, c, b))
         button.bind("<Button-3>", lambda event, r=row, c=col, b=button: set_end(r, c, b))
@@ -235,30 +225,64 @@ graph.load_maze(rows, cols)
 for (x, y), neighbours in graph.as_dict().items():
     existing = [neighbour for weight, neighbour in neighbours]
     if (x,y-1) not in existing:
-        wall = tk.Frame(root, bg="black")
-        wall.place(x=x*button_dim, y=y*button_dim, width=button_dim, height=2)
+        wall = tk.Frame(root, bg="white")
+        wall.place(x=x*button_dim, y=y*button_dim, width=button_dim, height=4)
     if (x,y+1) not in existing:
-        wall = tk.Frame(root, bg="black")
-        wall.place(x=x*button_dim, y=(y+1)*button_dim, width=button_dim, height=2)
+        wall = tk.Frame(root, bg="white")
+        wall.place(x=x*button_dim, y=(y+1)*button_dim, width=button_dim, height=4)
     if (x-1,y) not in existing:
-        wall = tk.Frame(root, bg="black")
-        wall.place(x=x*button_dim, y=y*button_dim, width=2, height=button_dim)
+        wall = tk.Frame(root, bg="white")
+        wall.place(x=x*button_dim, y=y*button_dim, width=4, height=button_dim)
     if (x+1,y) not in existing:
-        wall = tk.Frame(root, bg="black")
-        wall.place(x=(x+1)*button_dim, y=y*button_dim, width=2, height=button_dim)
+        wall = tk.Frame(root, bg="white")
+        wall.place(x=(x+1)*button_dim, y=y*button_dim, width=4, height=button_dim)
+
+# colour routes
+def colour_routes():
+    # Initialize the queue with the starting node
+    queue = deque([(0, start)])
+    # Set to keep track of visited nodes
+    visited = set([start])
+    
+    while queue:
+        # Dequeue a node from the front of the queue
+        _, (x,y) = queue.popleft()
+        h, s, v = hex_to_hsv(buttons[x][y].cget('bg'))
+        
+        # Enqueue all unvisited neighbours
+        for weight, (i,j) in graph[(x,y)]:
+            if (i,j) not in visited:
+                buttons[i][j].configure(bg=hsv_to_hex((h-weight)%360, s, v))
+                visited.add((i,j))
+                queue.append((weight, (i,j)))
+
+buttons[0][0].configure(bg=START_COLOUR)
+buttons[rows-1][cols-1].configure(bg=END_COLOUR)
+
+old_start = start
+old_end = end
+colour_routes()
+root.update()
 
 # tk loop
 while True:
-    (x, y), (i, j) = start, end
-    path = graph.djikstras((y,x), (j,i))
-    print(path)
-    try:
-        path.pop()
-        path.pop(0)
-        for y, x in path:
-            buttons[x][y].configure(bg="red")
-    except:
-        pass
+    # flip the path diagonally due to difference in coordinates
+    if start != old_start:
+        colour_routes()
 
+    if start != old_start or end != old_end:
+        (x, y), (i, j) = start, end
+        path = graph.djikstras((y,x), (j,i))
+        try:
+            path.pop()
+            path.pop(0)
+            for y, x in path:
+                #buttons[x][y].configure(bg="#000000")
+                pass
+        except:
+            pass
+
+    old_start = start
+    old_end = end
     root.update_idletasks()
     root.update()
