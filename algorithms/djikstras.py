@@ -123,7 +123,7 @@ class Graph:
 
         graph = {key: [] for key in grid}
         for i in range(len(path)-1):
-            graph[path[i]].append((random.randint(-10, 10), path[i+1]))
+            graph[path[i]].append((random.randint(0, 4), path[i+1]))
         
         self.__graph = graph
 
@@ -166,9 +166,9 @@ class Graph:
         return []
 
 # grid size
-rows = 40
-cols = 40
-button_dim = 20
+rows = 16
+cols = 16
+button_dim = 32
 
 # list of references to the buttons
 buttons = []
@@ -183,7 +183,7 @@ root = tk.Tk()
 #         if bg == "red":
 #             child.configure(bg="#888888")
 
-START_COLOUR = "#FFD3D6"
+START_COLOUR = "#80ED99"
 END_COLOUR = "#F765A3"
 
 def set_start(row, col, button):
@@ -247,12 +247,12 @@ def colour_routes():
     while queue:
         # Dequeue a node from the front of the queue
         _, (x,y) = queue.popleft()
-        h, s, v = hex_to_hsv(buttons[x][y].cget('bg'))
+        h, s, v = hex_to_hsv(buttons[y][x].cget('bg'))
         
         # Enqueue all unvisited neighbours
         for weight, (i,j) in graph[(x,y)]:
             if (i,j) not in visited:
-                buttons[i][j].configure(bg=hsv_to_hex((h-weight)%360, s, v))
+                buttons[j][i].configure(bg=hsv_to_hex((h-weight)%360, s, v))
                 visited.add((i,j))
                 queue.append((weight, (i,j)))
 
