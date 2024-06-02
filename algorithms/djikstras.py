@@ -123,7 +123,7 @@ class Graph:
 
         graph = {key: [] for key in grid}
         for i in range(len(path)-1):
-            graph[path[i]].append((random.randint(0, 4), path[i+1]))
+            graph[path[i]].append((random.randint(0, 2), path[i+1]))
         
         self.__graph = graph
 
@@ -166,9 +166,9 @@ class Graph:
         return []
 
 # grid size
-rows = 64
-cols = 64
-button_dim = 12
+rows = 40
+cols = 40
+button_dim = 20
 
 # list of references to the buttons
 buttons = []
@@ -183,7 +183,7 @@ root = tk.Tk()
 #         if bg == "red":
 #             child.configure(bg="#888888")
 
-START_COLOUR = "#80ED99"
+START_COLOUR = "#96ff8c"
 END_COLOUR = "#F765A3"
 
 def set_start(row, col, button):
@@ -238,7 +238,7 @@ for (x, y), neighbours in graph.as_dict().items():
         wall.place(x=(x+1)*button_dim, y=y*button_dim, width=4, height=button_dim)
 
 # colour routes
-def colour_routes():
+def colour_routes(start):
     # Initialize the queue with the starting node
     queue = deque([(0, start)])
     # Set to keep track of visited nodes
@@ -261,7 +261,7 @@ buttons[rows-1][cols-1].configure(bg=END_COLOUR)
 
 old_start = start
 old_end = end
-colour_routes()
+colour_routes(start)
 buttons[0][0].configure(bg="#FFFFFF")
 root.update()
 
@@ -269,8 +269,8 @@ root.update()
 while True:
     # flip the path diagonally due to difference in coordinates
     if start != old_start:
-        colour_routes()
         x, y = start
+        colour_routes((y,x))
         buttons[x][y].configure(bg="#FFFFFF")
 
     # if start != old_start or end != old_end:
