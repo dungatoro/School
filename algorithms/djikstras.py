@@ -166,9 +166,9 @@ class Graph:
         return []
 
 # grid size
-rows = 16
-cols = 16
-button_dim = 32
+rows = 64
+cols = 64
+button_dim = 12
 
 # list of references to the buttons
 buttons = []
