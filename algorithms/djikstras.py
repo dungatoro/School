@@ -176,6 +176,7 @@ buttons = []
 start = (0,0)
 end = (rows-1, cols-1)
 root = tk.Tk()
+root.configure(background='white')
 
 # def clear_path():
 #     for child in root.children.values():
@@ -263,6 +264,7 @@ old_start = start
 old_end = end
 colour_routes(start)
 buttons[0][0].configure(bg="#FFFFFF")
+buttons[rows-1][cols-1].configure(bg="#FFFFFF")
 root.update()
 
 # tk loop
@@ -273,14 +275,26 @@ while True:
         colour_routes((y,x))
         buttons[x][y].configure(bg="#FFFFFF")
 
-    # if start != old_start or end != old_end:
-    #     (x, y), (i, j) = start, end
-    #     path = graph.djikstras((y,x), (j,i))
-    #     try:
-    #         path.pop()
-    #         path.pop(0)
-    #     except:
-    #         pass
+    """
+    if start != old_start or end != old_end:
+        (x, y), (i, j) = start, end
+        path = graph.djikstras((y,x), (j,i))
+        for x in range(rows):
+            for y in range(cols):
+                for widget in buttons[x][y].winfo_children():
+                    if isinstance(widget, tk.Canvas):
+                        widget.destroy()
+        try:
+            path.pop()
+            path.pop(0)
+            for x, y in path:
+                canvas = tk.Canvas(buttons[y][x], bg=buttons[y][x].cget('bg'), width=button_dim+4, height=button_dim+4)
+                canvas.pack()
+        except Exception as e:
+            print(e)
+
+        buttons[i][j].configure(bg="#FFFFFF")
+    """
 
     old_start = start
     old_end = end
