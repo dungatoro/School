@@ -7,13 +7,19 @@ from gradpyent.gradient import Gradient
 
 WHITE = "#FFFFFF"
 MAX_WEIGHT = 10
+start_colour = "#ffffff"
+end_colour   = "#000000"
 
-gg = Gradient(gradient_start="#ff0000", gradient_end="#0000ff")
+darks  = Gradient(gradient_start="#000000", gradient_end=start_colour).get_gradient_series(
+        series=[i/1000 for i in range(1000)], fmt='html')
+lights = Gradient(gradient_start=start_colour, gradient_end="#FFFFFF").get_gradient_series(
+        series=[i/1000 for i in range(1000)], fmt='html')
+
 grad_size = 100
-grad = gg.get_gradient_series(series=[i/grad_size for i in range(grad_size)],
-                              fmt='html')
+grad = darks+Gradient(gradient_start=start_colour, gradient_end=end_colour).get_gradient_series(
+       series=[i/grad_size for i in range(grad_size)], fmt='html')+lights
 
-START_COLOUR = grad[grad_size//2]
+START_COLOUR = grad[len(grad)//2]
 
 class Infinity:
     def __gt__(self, _): return True
@@ -171,25 +177,8 @@ def colour_routes(start): # breadth-first
         # Enqueue all unvisited neighbours
         for weight, (i,j) in graph[(x,y)]:
             if (i,j) not in visited:
-                if colour not in grad:
-                    h, s, v = hex_to_hsv(colour)
-                    h1, s1, v1 = hex_to_hsv(grad[0])
-                    if s1 > s: 
-                        colour = hsv_to_hex(h, max(0, s-0.01), max(0, v-0.01))
-                    else:
-                        colour = hsv_to_hex(h, min(1, s+0.01), min(1, v+0.01))
-                else:
-                    idx = grad.index(colour) - (weight-MAX_WEIGHT//2)
-                    print(idx)
-                    if idx >= grad_size:
-                        h, s, v = hex_to_hsv(colour)
-                        colour = hsv_to_hex(h, max(0, s-0.01), max(0, v-0.01))
-                    elif idx < 0:
-                        h, s, v = hex_to_hsv(colour)
-                        colour = hsv_to_hex(h, min(1, s+0.01), min(1, v+0.01))
-                    else:
-                        colour = grad[idx]
-
+                idx = grad.index(colour) - (weight-MAX_WEIGHT//2)
+                colour = grad[idx]
                 buttons[j][i].configure(bg=colour)
 
                 if (i,j) == end:
@@ -231,9 +220,9 @@ def draw_shortest_path():
         print(e)
 
 # grid size
-rows = 32
-cols = 32
-button_dim = 20
+rows = 60
+cols = 60
+button_dim = 12
 
 start = (0,0) # corners
 end = (rows-1, cols-1)
